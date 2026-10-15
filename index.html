@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Вишлист</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#eff1f5; --panel:#e6e9ef; --line:#ccd0da; --text:#4c4f69; --dim:#8c8fa1;
+  --str:#40a02b; --kw:#8839ef; --fn:#1e66f5; --warn:#df8e1d; --pink:#ea76cb;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1e1e2e; --panel:#181825; --line:#313244; --text:#cdd6f4; --dim:#7f849c;
+    --str:#a6e3a1; --kw:#cba6f7; --fn:#89b4fa; --warn:#f9e2af; --pink:#f5c2e7;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1e1e2e; --panel:#181825; --line:#313244; --text:#cdd6f4; --dim:#7f849c;
+  --str:#a6e3a1; --kw:#cba6f7; --fn:#89b4fa; --warn:#f9e2af; --pink:#f5c2e7;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;min-height:100%;background:var(--bg);color:var(--text);
+  font:15px/1.6 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+}
+main{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+.bar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--panel);
+  border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;color:var(--dim);font-size:13px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot:nth-child(1){background:#f38ba8}.dot:nth-child(2){background:#f9e2af}.dot:nth-child(3){background:#a6e3a1}
+.bar span{margin-left:6px}
+.code{border:1px solid var(--line);border-radius:0 0 12px 12px;background:var(--panel);padding:16px 14px 18px}
+.kw{color:var(--kw)}.fn{color:var(--fn)}.str{color:var(--str)}.dim{color:var(--dim)}.pink{color:var(--pink)}
+.head{margin:0 0 6px;overflow-wrap:anywhere}
+.item{padding:8px 0 8px 18px;border-left:2px solid var(--line);margin-left:6px}
+.name{overflow-wrap:anywhere}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.btn{font:inherit;font-size:13px;color:var(--fn);background:transparent;border:1px solid var(--line);
+  border-radius:8px;padding:6px 12px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn:hover,.btn:focus-visible{border-color:var(--fn);outline:none}
+.btn.done{color:var(--str);border-color:var(--str)}
+.note{font-size:13px;color:var(--warn);margin-top:4px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);
+  background:var(--text);color:var(--bg);padding:8px 14px;border-radius:10px;font-size:13px;opacity:0;
+  pointer-events:none;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span>wishlist.py</span></div>
+  <div class="code">
+    <p class="head"><span class="pink">wishlist</span> = [</p>
+    <div id="list"></div>
+    <p class="head" style="margin:6px 0 0">]</p>
+  </div>
+</main>
+<div class="toast" id="toast">Ссылка скопирована</div>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+var items = [
+  ["Балтика 0% малина (ящик)", "https://www.ozon.ru/product/pivo-bezalkogolnoe-baltika-0-malina-24-sht-h-0-33-l-fruktovyy-napitok-s-sokom-maliny-3136487062/"],
+  ["Книжная полка антистресс", "https://www.ozon.ru/product/shake-away-your-anxiety-kreativnye-antistressovye-ukrasheniya-dlya-knizhnyh-polok-podarki-na-1671703909/"],
+  ["Крутой чай", ""],
+  ["Постельное бельё", "https://www.ozon.ru/product/blakit-postelnoe-bele-2-spalnoe-byaz-100-hlopok-2-navolochki-50h70-3239260448/"],
+  ["Руль для велосипеда", "https://www.ozon.ru/product/uno-sverhlegkiy-izognutyy-rul-dlya-shosseynogo-serebro-velosipeda-25-4-31-8-mm-360-mm-380-mm-400-1614660947/"],
+  ["Румбокс «Ателье»", "https://www.ozon.ru/product/bez-kleya-rolife-rumboks-atele-elzy-podarochnyy-interernyy-konstruktor-3184214499/"],
+  ["Румбокс «Библиотека»", "https://www.ozon.ru/product/rumboks-interernyy-konstruktor-seriya-knizhnyy-rumboks-biblioteka-pc2215-801424028/"],
+  ["Сундук «Майнкрафт»", "https://www.ozon.ru/product/sunduk-dlya-hraneniya-igrushek-i-veshchey-maynkraft-1574868894/"]
+];
+var toast = document.getElementById("toast"), timer;
+function say(t){
+  toast.textContent = t; toast.classList.add("show");
+  clearTimeout(timer); timer = setTimeout(function(){ toast.classList.remove("show"); }, 1600);
+}
+function copy(text, btn){
+  function ok(){
+    btn.classList.add("done"); btn.textContent = "Скопировано";
+    say("Ссылка скопирована");
+    setTimeout(function(){ btn.classList.remove("done"); btn.textContent = "Копировать"; }, 1600);
+  }
+  function fallback(){
+    try{
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+      document.body.removeChild(ta); ok();
+    }catch(e){ say("Не получилось скопировать"); }
+  }
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(ok, fallback);
+    } else fallback();
+  }catch(e){ fallback(); }
+}
+var list = document.getElementById("list");
+items.forEach(function(it){
+  var d = document.createElement("div"); d.className = "item";
+  var n = document.createElement("div"); n.className = "name";
+  n.innerHTML = '<span class="str"></span><span class="dim">,</span>';
+  n.firstChild.textContent = '"' + it[0] + '"';
+  d.appendChild(n);
+  if(it[1]){
+    var a = document.createElement("div"); a.className = "acts";
+    var open = document.createElement("a");
+    open.className = "btn"; open.textContent = "Открыть"; open.href = it[1];
+    open.target = "_blank"; open.rel = "noopener";
+    open.addEventListener("click", function(e){
+      var w = window.Telegram && window.Telegram.WebApp;
+      if(w && w.initData && w.openLink){ e.preventDefault(); w.openLink(it[1]); }
+    });
+    var cp = document.createElement("button");
+    cp.className = "btn"; cp.type = "button"; cp.textContent = "Копировать";
+    cp.addEventListener("click", function(){ copy(it[1], cp); });
+    a.appendChild(open); a.appendChild(cp); d.appendChild(a);
+  } else {
+    var c = document.createElement("div"); c.className = "note";
+    c.textContent = "# ссылки нет, можно спросить меня"; d.appendChild(c);
+  }
+  list.appendChild(d);
+});
+try{
+  var tg = window.Telegram && window.Telegram.WebApp;
+  if(tg){ tg.ready(); tg.expand(); }
+}catch(e){}
+</script>
+</body>
+</html>
