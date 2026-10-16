@@ -93,7 +93,7 @@ function render(){
   ITEMS.forEach(function(it){
     var r = res[it.id], d = document.createElement("div"); d.className = "item";
     var h = '<div class="name">' + esc(it.name) + '</div>';
-    if(!isOwner && r) h += '<div class="who ' + (r.tg_id === me ? "mine" : "other") + '">' + (r.tg_id === me ? "Вы забронировали" : "Забронировал(а): " + esc(r.name)) + '</div>';
+    if(!isOwner && r) h += '<div class="who ' + (r.tg_id === me ? "mine" : "other") + '">' + (r.tg_id === me ? "Вы забронировали" : "Забронировано" + '</div>';
     h += '<div class="row' + (isOwner ? " own" : "") + '">';
     if(it.url) h += '<a class="mc" href="' + esc(it.url) + '" target="_blank" rel="noopener" data-open="' + esc(it.url) + '">Открыть</a><button class="mc" data-copy="' + esc(it.url) + '">Копировать ссылку</button>';
     else h += '<div class="free">на свой вкус</div>';
