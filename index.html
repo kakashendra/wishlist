@@ -94,7 +94,7 @@ function render(){
     if(!isOwner && r) h += '<div class="who ' + (r.tg_id === me ? "mine" : "other") + '">' + (r.tg_id === me ? "Вы забронировали" : "Забронировано") + '</div>';
     h += '<div class="row' + (isOwner ? " own" : "") + '">';
     if(it.url) h += '<a class="mc" href="' + esc(it.url) + '" target="_blank" rel="noopener" data-open="' + esc(it.url) + '">Открыть</a><button class="mc" data-copy="' + esc(it.url) + '">Копировать ссылку</button>';
-    else h += '<div class="free">на свой профессиональный вкус</div>';
+    else h += '<div class="free">на свой вкус</div>';
     if(!isOwner){
       if(!r) h += '<button class="mc grn" data-res="' + esc(it.id) + '">Бронь</button>';
       else if(r.tg_id === me) h += '<button class="mc red" data-unres="' + esc(it.id) + '">Снять бронь</button>';
