@@ -170,7 +170,7 @@ $("toggleEdit").addEventListener("click", function(){
 });
 
 if(isOwner){ $("note").hidden = false; $("note").textContent = "Брони скрыты от тебя, чтобы подарки остались сюрпризом 🎁"; $("toggleEdit").hidden = false; }
-$("hint").textContent = isOwner ? "" : "Нажми «Бронь», и остальные увидят, что подарок занят";
+$("hint").textContent = isOwner ? "" : "Бронировать можно и нужно. Катя со своего тг не видит брони";
 $("list").innerHTML = '<div class="item"><div class="name">Загрузка…</div></div>';
 load();
 if(!isOwner){ setInterval(load, 20000); document.addEventListener("visibilitychange", function(){ if(!document.hidden) load(); }); }
